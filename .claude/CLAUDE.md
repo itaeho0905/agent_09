@@ -5,16 +5,20 @@
 
 ```
 agent_09/
-├── .claude/CLAUDE.md   프로젝트 지침 (이 파일)
+├── .claude/
+│   ├── CLAUDE.md       프로젝트 지침 (이 파일)
+│   └── skills/mk-ppt/  발표자료(.pptx) 생성 스킬 (이 프로젝트 전용)
 ├── research/           자료조사 결과 (.md)
-└── report/             최종 보고서 (.pdf)
+├── report/             최종 보고서 (.pdf)
+└── ppt/                발표자료 (.pptx)
 ```
 
 ## 저장 규칙
 
 - 자료조사 결과는 `research/`에 .md로 저장한다.
 - 보고서는 `report/`에 저장한다. 루트에는 결과 파일을 두지 않는다.
-- 파일 이름: `주제_종류_vN.확장자` (예: `허준_자료조사_v2.md`, `허준_보고서_v2.pdf`)
+- 발표자료는 `mk-ppt` 스킬로 만들어 `ppt/`에 .pptx로 저장한다. 중간 파일(spec JSON 등)은 임시 폴더에 둔다.
+- 파일 이름: `주제_종류_vN.확장자` (예: `허준_자료조사_v2.md`, `허준_보고서_v2.pdf`, `허준_발표자료_v1.pptx`)
 
 ## 작업 규칙
 
@@ -38,4 +42,5 @@ agent_09/
 ### 4. 기타
 - 기존 파일을 덮어쓰지 않는다. 수정본은 버전 번호를 올려 새 파일로 만든다.
 - 보고서는 서론, 본론, 결론 구성으로 작성한다.
-- PDF 생성: 이 PC에는 Python이 없으므로 HTML로 작성한 뒤 Edge headless(`--print-to-pdf`)로 변환한다. 한글 글꼴은 맑은 고딕을 쓴다.
+- Python: 3.13이 `C:\Users\user\AppData\Local\Programs\Python\Python313\python.exe`에 설치되어 있으나 PATH에 없다. 전체 경로로 실행한다. python-pptx 1.0.2가 설치되어 있다.
+- PDF 생성: HTML로 작성한 뒤 Edge headless(`--print-to-pdf`)로 변환한다. 한글 글꼴은 맑은 고딕을 쓴다.
