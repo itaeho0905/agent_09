@@ -7,7 +7,7 @@ description: agent_09 프로젝트에서 python-pptx로 PowerPoint 발표자료(
 
 이 프로젝트(agent_09)의 규칙에 맞춰 python-pptx로 발표자료를 만든다.
 슬라이드는 직접 코드로 그리지 않는다. **슬라이드 내용을 JSON 사양(spec)으로 쓰고 `scripts/build_pptx.py`에 넘기는 방식**을 기본으로 한다.
-이렇게 하면 디자인(맑은 고딕, 색, 제목 띠, 쪽 번호)이 매번 같게 나오고, 한글 글꼴·글머리표처럼 python-pptx에서 자주 틀리는 부분을 스크립트가 처리한다.
+이렇게 하면 디자인(Noto Sans KR, 테마 색, 제목 띠, 쪽 번호)이 매번 같게 나오고, 한글 글꼴·글머리표처럼 python-pptx에서 자주 틀리는 부분을 스크립트가 처리한다.
 
 ## 실행 환경
 
@@ -18,8 +18,14 @@ description: agent_09 프로젝트에서 python-pptx로 PowerPoint 발표자료(
 
 ## 작업 순서
 
+### 0. 규칙과 디자인 먼저 읽기 (항상 가장 먼저)
+적용 순서는 **`.claude/rules/` 규칙 → 디자인 .md → 이 스킬의 기본값**이다. 서로 다르면 앞의 것을 따른다.
+- `.claude/rules/ppt-rule-vN.md` 중 N이 가장 큰 파일을 읽는다(장수·디자인·가독성 규칙).
+- 사용자가 준 디자인 .md, 없으면 `references/ppt/slide-design-system.md`를 읽는다. 둘 다 없으면 제작 전에 사용자에게 묻는다.
+- 디자인 .md가 정한 글꼴·색·레이아웃은 이 스킬의 기본값(Noto Sans KR, `navy`·`pink` 테마, 제목 띠)보다 우선한다. `build_pptx.py`로 그 디자인을 낼 수 없으면 python-pptx 코드를 임시 폴더에 직접 짠다.
+
 ### 1. 프로젝트 규칙 따르기
-CLAUDE.md의 작업 규칙이 이 스킬보다 우선한다.
+CLAUDE.md의 작업 규칙과 `.claude/rules/`의 규칙이 이 스킬보다 우선한다.
 - 실행 전에 todo list를 보고하고 승인을 받는다.
 - 이 스킬로 만드는 파일도 todo list에 적는다. 슬라이드 개요(제목 목록)를 함께 보여 주면 승인하는 사람이 결과를 미리 판단할 수 있다.
 
@@ -30,7 +36,7 @@ CLAUDE.md의 작업 규칙이 이 스킬보다 우선한다.
 
 ### 3. 슬라이드 개요 짜기
 - 보고서와 마찬가지로 **서론 → 본론 → 결론** 흐름으로 짠다.
-- 기본 구성(자료 분량에 따라 10~18장)
+- 장수는 `ppt-rule`을 따른다(사용자가 정하지 않으면 기본 8장). 아래는 장수에 맞춰 줄이거나 합치는 기본 구성이다.
   1. 표지(`title`)
   2. 서론: 발표 목차 또는 배경(`bullets`)
   3. 본론: 주제별 `section` 간지 + 내용 슬라이드
@@ -62,7 +68,7 @@ CLAUDE.md의 작업 규칙이 이 스킬보다 우선한다.
 ```
 다음을 확인한다.
 - 슬라이드 수와 각 슬라이드 제목이 개요와 같은가
-- 사용 글꼴이 맑은 고딕뿐인가
+- 사용 글꼴이 Noto Sans KR뿐인가(spec에서 `font`를 바꿨다면 그 글꼴)
 - "슬라이드 밖으로 나감" 경고가 없는가
 
 결과 보고에는 저장 경로, 슬라이드 목록, 확인하지 못한 점을 적는다. 글자 넘침은 PowerPoint로 열어 봐야만 알 수 있으므로 그 점을 함께 알린다.
@@ -79,8 +85,8 @@ CLAUDE.md의 작업 규칙이 이 스킬보다 우선한다.
   "author": "작성자",
   "footer": "허준과 동의보감",
   "size": "16:9",
-  "font": "맑은 고딕",
-  "theme": {"primary": "1F3864", "accent": "C55A11", "text": "222222", "muted": "6B7280", "light": "EEF2F7"},
+  "font": "Noto Sans KR",
+  "theme": "pink",
   "slides": [
     {"type": "title", "title": "허준과 동의보감", "subtitle": "조선 의학을 집대성한 의학자\n2026-10-13", "notes": "발표자 노트"},
     {"type": "section", "label": "본론 1", "title": "생애와 관직 활동"},
@@ -107,6 +113,18 @@ CLAUDE.md의 작업 규칙이 이 스킬보다 우선한다.
 | `table` | `title`, `columns`, `rows` | `col_widths`(비율), `font_size`(기본 16, 7행 이상 13) |
 | `chart` | `title`, `categories`, `series` | `chart_type`: column, column_stacked, bar, bar_stacked, line, pie, doughnut, area / `data_labels`(기본 true) |
 | `image` | `title`, `path` | `caption` |
+
+- `font`를 생략하면 **Noto Sans KR**을 쓴다(이 PC에 설치되어 있음). 다른 PC에서 열 때 글꼴이 없으면 대체 글꼴로 보인다.
+- `theme`에는 다음 세 형식 중 하나를 쓴다. 생략하면 `navy`가 적용된다.
+  - 프리셋 이름: `"navy"`(남색+주황), `"pink"`(분홍)
+  - 프리셋을 쓰면서 일부 색만 바꾸기: `{"preset": "pink", "accent": "EC407A"}`
+  - 색 사전만 쓰기: `{"primary": "...", "accent": "..."}`. 빠진 키는 `navy` 값으로 채워진다.
+- 테마 색 키는 `primary`(제목, 표 머리글, 표지 배경), `accent`(강조선, 글머리표), `text`, `muted`(쪽 번호, 바닥글), `light`(간지 배경, 표 줄무늬, 2단 상자), `subtitle`(표지 부제)이다.
+
+| 프리셋 | primary | accent | text | muted | light | subtitle |
+|---|---|---|---|---|---|---|
+| `navy` | 1F3864 | C55A11 | 222222 | 6B7280 | EEF2F7 | DDE3EC |
+| `pink` | AD1457 | F06292 | 3A2A30 | 8A6B78 | FCE4EC | F8D7E3 |
 
 - 모든 슬라이드에 `notes`(발표자 노트)를 넣을 수 있다.
 - `bullets` 항목은 문자열이거나 `{"text": ..., "level": 0~2}` 형식이다.

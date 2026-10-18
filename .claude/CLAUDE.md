@@ -7,17 +7,25 @@
 agent_09/
 ├── .claude/
 │   ├── CLAUDE.md       프로젝트 지침 (이 파일)
+│   ├── rules/          주제별 세부 지침 (.md, 자동 로드)
+│   │   └── ppt-rule-v1.md  발표자료 제작 규칙 (장수·디자인·가독성)
 │   └── skills/mk-ppt/  발표자료(.pptx) 생성 스킬 (이 프로젝트 전용)
+├── references/         디자인·참고 자료 (.md)
+│   └── ppt/
+│       └── slide-design-system.md  슬라이드 디자인 시스템 (색상·글꼴·레이아웃)
 ├── research/           자료조사 결과 (.md)
 ├── report/             최종 보고서 (.pdf)
-└── ppt/                발표자료 (.pptx)
+└── ppt/                발표자료 (.pptx, 보기용 .pdf)
 ```
 
 ## 저장 규칙
 
 - 자료조사 결과는 `research/`에 .md로 저장한다.
 - 보고서는 `report/`에 저장한다. 루트에는 결과 파일을 두지 않는다.
-- 발표자료는 `mk-ppt` 스킬로 만들어 `ppt/`에 .pptx로 저장한다. 중간 파일(spec JSON 등)은 임시 폴더에 둔다.
+- 발표자료는 `mk-ppt` 스킬로 만들어 `ppt/`에 .pptx로 저장한다. 중간 파일(spec JSON 등)은 임시 폴더에 둔다. PowerPoint가 없을 때 보기용 PDF는 같은 이름(.pdf)으로 `ppt/`에 둔다.
+- 디자인·참고 자료는 `references/`에 용도별 하위 폴더(예: `references/ppt/`)를 두고 .md로 저장한다. 발표자료를 만들 때는 `references/ppt/slide-design-system.md`를 디자인 기준으로 읽는다.
+- 주제별 세부 지침은 `.claude/rules/`에 .md로 저장한다. 파일 이름은 `주제-rule-vN.md` 형식을 쓴다. (예: `ppt-rule-v1.md`)
+- 발표자료 작업은 `.claude/rules/ppt-rule-vN.md`(최신 버전)를 `mk-ppt` 스킬보다 먼저 적용한다. 적용 순서: rules → 디자인 .md → 스킬 기본값.
 - 파일 이름: `주제_종류_vN.확장자` (예: `허준_자료조사_v2.md`, `허준_보고서_v2.pdf`, `허준_발표자료_v1.pptx`)
 
 ## 작업 규칙

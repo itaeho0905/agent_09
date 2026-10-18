@@ -22,14 +22,26 @@ from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.oxml.ns import qn
 from pptx.util import Emu, Inches, Pt
 
-DEFAULT_FONT = "맑은 고딕"
-DEFAULT_THEME = {
-    "primary": "1F3864",   # 제목 띠, 표 머리글
-    "accent": "C55A11",    # 강조선, 글머리표
-    "text": "222222",
-    "muted": "6B7280",
-    "light": "EEF2F7",     # 표 줄무늬, 2단 상자 배경
+DEFAULT_FONT = "Noto Sans KR"
+THEMES = {
+    "navy": {
+        "primary": "1F3864",   # 제목 띠, 표 머리글
+        "accent": "C55A11",    # 강조선, 글머리표
+        "text": "222222",
+        "muted": "6B7280",
+        "light": "EEF2F7",     # 표 줄무늬, 2단 상자 배경
+        "subtitle": "DDE3EC",  # 표지 부제(primary 배경 위)
+    },
+    "pink": {
+        "primary": "AD1457",
+        "accent": "F06292",
+        "text": "3A2A30",
+        "muted": "8A6B78",
+        "light": "FCE4EC",
+        "subtitle": "F8D7E3",
+    },
 }
+DEFAULT_THEME = THEMES["navy"]
 CHART_TYPES = {
     "column": XL_CHART_TYPE.COLUMN_CLUSTERED,
     "column_stacked": XL_CHART_TYPE.COLUMN_STACKED,
@@ -52,8 +64,22 @@ def rgb(hex_str):
     return RGBColor.from_string(hex_str.lstrip("#"))
 
 
+def resolve_theme(value):
+    """spec의 theme 값을 색 사전으로 바꾼다.
+    "pink"처럼 프리셋 이름, {"preset": "pink", "accent": ...}처럼 프리셋+덮어쓰기, 색 사전 모두 받는다."""
+    if value is None:
+        value = {}
+    if isinstance(value, str):
+        value = {"preset": value}
+    value = dict(value)
+    preset = value.pop("preset", "navy")
+    if preset not in THEMES:
+        sys.exit(f"오류: theme '{preset}'는 없음. 가능한 값: {', '.join(THEMES)}")
+    return {**THEMES[preset], **value}
+
+
 def apply_font(font, name, size=None, bold=None, color=None):
-    """글꼴을 지정한다. 한글이 맑은 고딕으로 나오려면 latin과 ea(동아시아) 둘 다 지정해야 한다."""
+    """글꼴을 지정한다. 한글이 지정한 글꼴로 나오려면 latin과 ea(동아시아) 둘 다 지정해야 한다."""
     if size is not None:
         font.size = Pt(size)
     if bold is not None:
@@ -160,7 +186,7 @@ def slide_title(prs, spec, ctx, closing=False):
     line.line.fill.background()
     if spec.get("subtitle"):
         add_text(slide, Inches(0.9), Inches(4.2), W - Inches(1.8), Inches(1.4),
-                 spec["subtitle"], ctx, size=20, color="DDE3EC")
+                 spec["subtitle"], ctx, size=20, color=theme["subtitle"])
     add_notes(slide, spec, ctx)
 
 
@@ -310,7 +336,7 @@ def build(spec_path, out_path):
         prs.slide_width, prs.slide_height = Inches(13.333), Inches(7.5)
     ctx = {
         "font": spec.get("font", DEFAULT_FONT),
-        "theme": {**DEFAULT_THEME, **spec.get("theme", {})},
+        "theme": resolve_theme(spec.get("theme")),
         "footer": spec.get("footer", ""),
     }
     for i, s in enumerate(spec["slides"], start=1):
