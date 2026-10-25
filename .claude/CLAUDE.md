@@ -8,7 +8,8 @@ agent_09/
 ├── .claude/
 │   ├── CLAUDE.md       프로젝트 지침 (이 파일)
 │   ├── rules/          주제별 세부 지침 (.md, 자동 로드)
-│   │   └── ppt-rule-v1.md  발표자료 제작 규칙 (장수·디자인·가독성)
+│   │   ├── ppt-rule-v1.md      발표자료 제작 규칙 (장수·디자인·가독성)
+│   │   └── browser-rule-v1.md  웹 브라우저 제어 규칙 (Playwright MCP 호출 조건)
 │   └── skills/mk-ppt/  발표자료(.pptx) 생성 스킬 (이 프로젝트 전용)
 ├── references/         디자인·참고 자료 (.md)
 │   └── ppt/
@@ -18,7 +19,10 @@ agent_09/
 ├── ppt/                발표자료 (.pptx, 보기용 .pdf)
 ├── blog/               블로그 원고 (.md)와 글에 넣는 이미지
 │   └── 주제_이미지/    블로그용 이미지 (Unsplash 등, unsplash_NN.jpg)
+├── cardnews/           카드뉴스 기획안 (.md)과 카드에 넣는 이미지
+│   └── 주제_이미지/    카드뉴스용 이미지 (Unsplash: unsplash_NN.jpg / Higgsfield 생성: higgsfield_NN.png)
 ├── .playwright-mcp/    Playwright MCP 임시 기록 (스냅샷·로그·스크린샷, git 제외)
+├── .mcp.json           프로젝트 MCP 서버 설정 (higgsfield: 이미지·영상 생성, 크레딧 차감 / figma: 디자인 파일 읽기·쓰기)
 └── .gitignore          git 제외 목록
 ```
 
@@ -27,6 +31,7 @@ agent_09/
 - 자료조사 결과는 `research/`에 .md로 저장한다.
 - 보고서는 `report/`에 저장한다. 루트에는 결과 파일을 두지 않는다.
 - 블로그 원고는 `blog/`에 `주제_블로그원고_vN.md`로 저장하고, 이미지는 `blog/주제_이미지/`에 둔다. 원고 끝에 참고 자료 출처와 이미지 크레딧을 적는다.
+- 카드뉴스 기획안은 `cardnews/`에 `주제_카드뉴스기획안_vN.md`로 저장하고, 이미지는 `cardnews/주제_이미지/`에 둔다. 기본 8장(1장은 썸네일)으로 구성하고, 끝에 참고 자료 출처와 이미지 크레딧을 적는다. 기획 후보는 파일로 만들지 않고 채팅에서 사용자의 선택을 받는다. Figma 등으로 완성한 카드 이미지는 `cardnews/주제_이미지/`에 `주제_썸네일_vN.png`(본문 카드는 `주제_카드NN_vN.png`)로 저장하고, Figma 파일 이름도 `주제_카드뉴스썸네일_vN` 형식을 쓴다.
 - Playwright MCP가 만드는 스냅샷·콘솔 로그·스크린샷은 `.playwright-mcp/`에 둔다. 이 폴더는 `.gitignore`로 git에서 제외하며, 결과물로 남길 파일은 용도에 맞는 폴더로 옮긴다.
 - 발표자료는 `mk-ppt` 스킬로 만들어 `ppt/`에 .pptx로 저장한다. 중간 파일(spec JSON 등)은 임시 폴더에 둔다. PowerPoint가 없을 때 보기용 PDF는 같은 이름(.pdf)으로 `ppt/`에 둔다.
 - 디자인·참고 자료는 `references/`에 용도별 하위 폴더(예: `references/ppt/`)를 두고 .md로 저장한다. 발표자료를 만들 때는 `references/ppt/slide-design-system.md`를 디자인 기준으로 읽는다.
