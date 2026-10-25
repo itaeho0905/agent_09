@@ -15,13 +15,19 @@ agent_09/
 │       └── slide-design-system.md  슬라이드 디자인 시스템 (색상·글꼴·레이아웃)
 ├── research/           자료조사 결과 (.md)
 ├── report/             최종 보고서 (.pdf)
-└── ppt/                발표자료 (.pptx, 보기용 .pdf)
+├── ppt/                발표자료 (.pptx, 보기용 .pdf)
+├── blog/               블로그 원고 (.md)와 글에 넣는 이미지
+│   └── 주제_이미지/    블로그용 이미지 (Unsplash 등, unsplash_NN.jpg)
+├── .playwright-mcp/    Playwright MCP 임시 기록 (스냅샷·로그·스크린샷, git 제외)
+└── .gitignore          git 제외 목록
 ```
 
 ## 저장 규칙
 
 - 자료조사 결과는 `research/`에 .md로 저장한다.
 - 보고서는 `report/`에 저장한다. 루트에는 결과 파일을 두지 않는다.
+- 블로그 원고는 `blog/`에 `주제_블로그원고_vN.md`로 저장하고, 이미지는 `blog/주제_이미지/`에 둔다. 원고 끝에 참고 자료 출처와 이미지 크레딧을 적는다.
+- Playwright MCP가 만드는 스냅샷·콘솔 로그·스크린샷은 `.playwright-mcp/`에 둔다. 이 폴더는 `.gitignore`로 git에서 제외하며, 결과물로 남길 파일은 용도에 맞는 폴더로 옮긴다.
 - 발표자료는 `mk-ppt` 스킬로 만들어 `ppt/`에 .pptx로 저장한다. 중간 파일(spec JSON 등)은 임시 폴더에 둔다. PowerPoint가 없을 때 보기용 PDF는 같은 이름(.pdf)으로 `ppt/`에 둔다.
 - 디자인·참고 자료는 `references/`에 용도별 하위 폴더(예: `references/ppt/`)를 두고 .md로 저장한다. 발표자료를 만들 때는 `references/ppt/slide-design-system.md`를 디자인 기준으로 읽는다.
 - 주제별 세부 지침은 `.claude/rules/`에 .md로 저장한다. 파일 이름은 `주제-rule-vN.md` 형식을 쓴다. (예: `ppt-rule-v1.md`)
